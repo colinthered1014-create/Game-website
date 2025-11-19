@@ -694,7 +694,53 @@ window.addEventListener('beforeunload', saveState);
 window.addEventListener('keydown', e => {
   if(e.key === ' ') { e.preventDefault(); clickAction(); }
 });
+<script type="module">
+  // Firebase CDN imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } 
+    from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "NUMBER",
+    appId: "APP_ID"
+  };
+
+  // Init firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Save score
+  async function submitScore(name, score){
+    await addDoc(collection(db, "leaderboard"), {
+      name,
+      score,
+      ts: Date.now()
+    });
+  }
+
+  // Load top scoreboard
+  async function getTopScores(){
+    const q = query(
+      collection(db, "leaderboard"),
+      orderBy("score", "desc"),
+      limit(20)
+    );
+
+    const snapshot = await getDocs(q);
+    const data = [];
+    snapshot.forEach(doc => data.push(doc.data()));
+    return data;
+  }
+
+  window.submitScore = submitScore;
+  window.getTopScores = getTopScores;
+</script>
 
 </script>
 </body>
 </html>
+
