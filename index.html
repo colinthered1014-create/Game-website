@@ -1,164 +1,700 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Game Website</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ultimate Clicker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
 <style>
-  body { font-family: Arial, sans-serif; text-align:center; margin:20px; background:#f0f0f0; }
-  h1 { color:#333; }
-  section { margin-bottom:50px; }
-  button { padding:10px 20px; font-size:16px; margin-top:10px; cursor:pointer; }
-  canvas { background:#333; border:3px solid #000; margin-top:10px; }
-  ol { padding-left:20px; text-align:left; display:inline-block; }
+  :root{
+    --bg1:#0f1724;
+    --bg2:#18304a;
+    --card: rgba(255,255,255,0.06);
+    --accent: #00d1ff;
+    --accent-2: #7afcff;
+    --muted: rgba(255,255,255,0.7);
+    --glass: rgba(255,255,255,0.06);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,Arial;
+    background: linear-gradient(135deg,var(--bg1),var(--bg2));
+    color: #e6f3ff;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:1100px;
+    display:grid;
+    grid-template-columns: 1fr 380px;
+    gap:20px;
+  }
+
+  @media (max-width:980px){
+    .wrap{grid-template-columns: 1fr; padding-bottom:40px}
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    padding:18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* Left column */
+  .play-area{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:center;
+    padding:26px;
+  }
+
+  .title{
+    display:flex;
+    width:100%;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+  }
+
+  .title h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:0.4px;
+  }
+  .stats{
+    text-align:right;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .big-button{
+    width:230px;
+    height:230px;
+    border-radius:50%;
+    border:none;
+    background: radial-gradient(circle at 35% 25%, var(--accent-2), var(--accent));
+    box-shadow: 0 12px 30px rgba(0,210,255,0.12), 0 6px 12px rgba(0,0,0,0.4), 0 0 40px rgba(0,210,255,0.08) inset;
+    cursor:pointer;
+    font-weight:900;
+    font-size:28px;
+    color:#041018;
+    transition: transform .08s ease;
+    position:relative;
+    overflow:visible;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    user-select:none;
+  }
+
+  .big-button:active{ transform: scale(.98) }
+  .small-row{ display:flex; gap:12px; width:100%; justify-content:center; flex-wrap:wrap; }
+
+  .upgrade{
+    background:var(--glass);
+    padding:12px;
+    border-radius:12px;
+    text-align:left;
+    min-width:180px;
+    max-width:100%;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.03);
+    transition: transform .12s, background .12s;
+  }
+
+  .upgrade:hover{ transform: translateY(-4px); background: rgba(255,255,255,0.09); }
+
+  .upgrade .title { font-weight:700; font-size:14px; }
+  .upgrade .meta { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  .row-between { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+
+  /* Right column - leaderboards, achievements */
+  .side{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .leaderboard-list, .ach-list{
+    list-style:none;
+    padding:10px;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .leader-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background: rgba(255,255,255,0.03);
+    padding:8px;
+    border-radius:8px;
+    font-size:14px;
+  }
+
+  .controls{
+    display:flex;
+    gap:10px;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    padding:8px 12px;
+    border-radius:10px;
+    border:none;
+    background:rgba(255,255,255,0.06);
+    color:inherit;
+    cursor:pointer;
+  }
+
+  .muted{ color:var(--muted); font-size:13px; }
+
+  .mini{
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  /* floating + particles */
+  .particle{
+    position:absolute;
+    pointer-events:none;
+    font-weight:800;
+    color: #baf7ff;
+    text-shadow: 0 6px 16px rgba(0,0,0,0.45);
+    transform-origin:center;
+    will-change: transform, opacity;
+  }
+
+  footer{ text-align:center; color:var(--muted); font-size:13px; margin-top:12px; }
 </style>
 </head>
 <body>
+<div class="wrap">
+  <div class="card play-area">
+    <div class="title">
+      <h1>Ultimate Clicker</h1>
+      <div class="stats">
+        <div id="clickCount">Clicks: 0</div>
+        <div id="perSec" class="mini">+0 / sec</div>
+      </div>
+    </div>
 
-<h1>My Game Website</h1>
+    <div style="position:relative; width:100%; display:flex; justify-content:center; margin-top:6px;">
+      <button id="bigBtn" class="big-button">CLICK</button>
+      <!-- particles injected dynamically -->
+    </div>
 
-<!-- Clicker Game Section -->
-<section id="clicker-game">
-  <h2>Clicker Game</h2>
-  <div id="clicker-score">Score: 0</div>
-  <button id="clickButton">Click me!</button>
-  <div id="clicker-leaderboard">
-    <h3>Clicker Leaderboard</h3>
-    <ol id="clickerLeaderboardList"></ol>
+    <div class="small-row">
+      <div class="upgrade" id="multUpgrade">
+        <div class="title">Multiplier</div>
+        <div class="meta">Cost: <span id="multCost">10</span> · Multiplier: x<span id="multValue">1.00</span></div>
+      </div>
+
+      <div class="upgrade" id="autoUpgrade">
+        <div class="title">Auto Clicker</div>
+        <div class="meta">Cost: <span id="autoCost">100</span> · Owned: <span id="autoOwned">0</span></div>
+      </div>
+    </div>
+
+    <div style="width:100%; display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
+      <div class="upgrade" id="critUpgrade" style="min-width:260px;">
+        <div class="title">Critical Chance</div>
+        <div class="meta">Critical chance: <span id="critChance">5%</span> · Crit multiplier: <span id="critMult">x2</span></div>
+      </div>
+
+      <div class="upgrade" id="moreUpgrade" style="min-width:260px;">
+        <div class="title">Click Power</div>
+        <div class="meta">Add +<span id="flatAdd">0</span> flat clicks per click</div>
+      </div>
+    </div>
+
+    <div style="width:100%; margin-top:12px; display:flex; justify-content:center; gap:10px;">
+      <button id="prestigeBtn" class="btn">Prestige</button>
+      <button id="resetBtn" class="btn">Reset (keep achievements)</button>
+      <button id="syncBtn" class="btn">Sync to Global Leaderboard</button>
+    </div>
+
+    <footer class="mini">Saved locally. For global leaderboard, deploy backend and set API URL.</footer>
   </div>
-</section>
 
-<!-- Dodge Game Section -->
-<section id="dodge-game">
-  <h2>Dodge Game</h2>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
-  <div id="dodge-score">Score: 0</div>
-  <div id="dodge-leaderboard">
-    <h3>Dodge Leaderboard</h3>
-    <ol id="dodgeLeaderboardList"></ol>
+  <div class="card side">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <strong>Clicker Leaderboard</strong>
+      <div class="mini">Top (local) & global</div>
+    </div>
+    <ol id="localLeaderboard" class="leaderboard-list"></ol>
+
+    <div style="display:flex; gap:10px;">
+      <input id="nameInput" placeholder="Your name (global)" style="flex:1; padding:8px; border-radius:8px; border:none; background:rgba(255,255,255,0.03); color:inherit;">
+      <button id="submitGlobal" class="btn">Submit</button>
+    </div>
+
+    <hr style="border:none; height:1px; background:rgba(255,255,255,0.03); margin:10px 0;">
+
+    <strong>Achievements</strong>
+    <ul id="achList" class="ach-list"></ul>
+
+    <div style="margin-top:auto; display:flex; justify-content:space-between; gap:10px; align-items:center;">
+      <div class="mini">Prestige multiplier x <span id="prestigeMult">1</span></div>
+      <div class="mini">Offline ready: <span id="offlineInfo">0</span> sec</div>
+    </div>
   </div>
-</section>
+</div>
 
 <script>
-// ---------- Clicker Game ----------
-let clickerScore = 0;
-const clickerScoreDisplay = document.getElementById('clicker-score');
-const clickButton = document.getElementById('clickButton');
-const clickerLeaderboardList = document.getElementById('clickerLeaderboardList');
+/* ============================================
+   GAME STATE & CONFIG
+   ============================================ */
 
-clickButton.addEventListener('click', () => {
-  clickerScore++;
-  clickerScoreDisplay.textContent = "Score: " + clickerScore;
-  saveClickerScore(clickerScore);
+const API_URL = ""; // <--- set to your backend like "https://your-backend.onrender.com" to enable global leaderboards
+const GAME_KEY = "ultimate-clicker";
+const LOCAL_LB_KEY = "clicker_local_lb_v1";
+
+const config = {
+  baseMultCost: 10,
+  autoBaseCost: 100,
+  critBaseChance: 0.05,
+  critMult: 2,
+  autoGainPer: 1,
+  offlineMaxSeconds: 60 * 60 * 24, // cap offline at 24h
+};
+
+let state = {
+  clicks: 0,
+  multiplier: 1,
+  multCost: config.baseMultCost,
+  autoOwned: 0,
+  autoCost: config.autoBaseCost,
+  critChance: config.critBaseChance,
+  critLevel: 0,
+  addPerClick: 0,
+  flatUpgrades: 0,
+  prestigeCount: 0,
+  earnedPrestigeMult: 1,
+  lastTick: Date.now(),
+  achievements: {},
+  particles: [],
+};
+
+/* helpers */
+const $ = id => document.getElementById(id);
+
+function saveState(){
+  localStorage.setItem(GAME_KEY, JSON.stringify(state));
+  updateLocalLeaderboardIfNeeded();
+}
+function loadState(){
+  const s = localStorage.getItem(GAME_KEY);
+  if(s){
+    try{
+      const parsed = JSON.parse(s);
+      state = Object.assign(state, parsed);
+    }catch(e){}
+  }
+  // offline earnings calc
+  const now = Date.now();
+  const diff = Math.floor((now - (state.lastTick||now))/1000);
+  state.lastTick = now;
+  if(diff>0){
+    const sec = Math.min(diff, config.offlineMaxSeconds);
+    const gained = sec * state.autoOwned * config.autoGainPer * state.earnedPrestigeMult;
+    if(gained>0) showFloatingText("+"+formatNum(gained), 200);
+    state.clicks += gained;
+    $("offlineInfo").textContent = sec;
+  } else {
+    $("offlineInfo").textContent = 0;
+  }
+}
+
+/* basic formatting */
+function formatNum(n){
+  if(n>=1e9) return (n/1e9).toFixed(2)+'B';
+  if(n>=1e6) return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'k';
+  return Math.floor(n);
+}
+
+/* ============================================
+   UI refs & initial display
+   ============================================ */
+
+const bigBtn = $("bigBtn");
+const clickCount = $("clickCount");
+const perSec = $("perSec");
+const multCostEl = $("multCost");
+const multValueEl = $("multValue");
+const autoCostEl = $("autoCost");
+const autoOwnedEl = $("autoOwned");
+const critChanceEl = $("critChance");
+const critMultEl = $("critMult");
+const flatAddEl = $("flatAdd");
+const localLeaderboard = $("localLeaderboard");
+const achList = $("achList");
+const prestigeBtn = $("prestigeBtn");
+const prestigeMultEl = $("prestigeMult");
+const nameInput = $("nameInput");
+const submitGlobal = $("submitGlobal");
+const syncBtn = $("syncBtn");
+const resetBtn = $("resetBtn");
+const multUpgrade = $("multUpgrade");
+const autoUpgrade = $("autoUpgrade");
+const critUpgrade = $("critUpgrade");
+const moreUpgrade = $("moreUpgrade");
+
+/* sound using WebAudio */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playClickSound(pitch=1, short=true){
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = 'sine';
+  o.frequency.value = 400 * pitch;
+  g.gain.value = short ? 0.08 : 0.12;
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start();
+  o.stop(audioCtx.currentTime + (short?0.06:0.12));
+}
+function playUpgradeSound(){
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type='triangle';
+  o.frequency.value = 600;
+  g.gain.value = 0.12;
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start();
+  o.stop(audioCtx.currentTime + 0.18);
+}
+
+/* ============================================
+   PARTICLES (floating +n)
+   ============================================ */
+
+function createParticle(text, x=window.innerWidth/2, y=window.innerHeight/2){
+  const el = document.createElement('div');
+  el.className='particle';
+  el.textContent = text;
+  document.body.appendChild(el);
+  const sx = (Math.random()*120-60);
+  let life = 900 + Math.random()*400;
+  el.style.left = (x - 12) + 'px';
+  el.style.top = (y - 30) + 'px';
+  el.style.opacity = 1;
+  el.style.transform = 'translateY(0) scale(1)';
+  const start = performance.now();
+  function tick(now){
+    const t = now - start;
+    const prog = t / life;
+    el.style.transform = `translate(${sx*prog}px, ${-80*prog}px) scale(${1 - 0.3*prog})`;
+    el.style.opacity = String(1 - prog);
+    if(prog<1) requestAnimationFrame(tick);
+    else { el.remove(); }
+  }
+  requestAnimationFrame(tick);
+}
+
+function showFloatingText(text, duration=800){
+  createParticle(text, bigBtn.getBoundingClientRect().left + bigBtn.offsetWidth/2,
+                      bigBtn.getBoundingClientRect().top + 80);
+}
+
+/* ============================================
+   GAME LOGIC: click, upgrades, autos, crits
+   ============================================ */
+
+function updateUI(){
+  clickCount.textContent = "Clicks: " + formatNum(state.clicks);
+  perSec.textContent = "+" + formatNum(state.autoOwned * config.autoGainPer * state.earnedPrestigeMult) + " / sec";
+  multCostEl.textContent = Math.floor(state.multCost);
+  multValueEl.textContent = state.multiplier.toFixed(2);
+  autoCostEl.textContent = Math.floor(state.autoCost);
+  autoOwnedEl.textContent = state.autoOwned;
+  critChanceEl.textContent = Math.round(state.critChance*100) + "%";
+  critMultEl.textContent = "x" + config.critMult;
+  flatAddEl.textContent = state.addPerClick;
+  prestigeMultEl.textContent = state.earnedPrestigeMult;
+  // achievements list
+  renderAchievements();
+  renderLocalLeaderboard();
+  saveState();
+}
+
+function clickAction(){
+  // chance for critical
+  let crit = Math.random() < state.critChance;
+  let base = state.multiplier + state.addPerClick;
+  let gained = base * state.earnedPrestigeMult;
+  if(crit) gained *= config.critMult;
+  // small randomness for feel
+  gained = Math.max(0.01, gained);
+  state.clicks += gained;
+  // visual and audio
+  showFloatingText((crit?("CRIT +" + Math.floor(gained)) : ("+" + Math.floor(gained))), 800);
+  playClickSound(crit?1.5:1, !crit);
+  // achievements
+  checkAchievements();
+  // particle burst small
+  burstParticles();
+  updateUI();
+}
+
+/* handle big button */
+bigBtn.addEventListener('click', () => {
+  clickAction();
 });
 
-// Leaderboard functions for Clicker
-function saveClickerScore(score){
-  let scores = JSON.parse(localStorage.getItem('clickerLeaderboard')||'[]');
-  scores.push(score);
-  scores.sort((a,b)=>b-a);
-  scores = scores.slice(0,5);
-  localStorage.setItem('clickerLeaderboard', JSON.stringify(scores));
-  displayClickerLeaderboard();
-}
+/* auto tick */
+setInterval(() => {
+  const gain = state.autoOwned * config.autoGainPer * state.earnedPrestigeMult;
+  if(gain>0){
+    state.clicks += gain;
+    if(gain>=1) showFloatingText("+"+formatNum(gain));
+  }
+  updateUI();
+}, 1000);
 
-function displayClickerLeaderboard(){
-  const scores = JSON.parse(localStorage.getItem('clickerLeaderboard')||'[]');
-  clickerLeaderboardList.innerHTML = '';
-  scores.forEach(s=>{
-    const li = document.createElement('li');
-    li.textContent = s;
-    clickerLeaderboardList.appendChild(li);
-  });
-}
-displayClickerLeaderboard();
+/* multiplier purchase: +10% multiplier each purchase, cost increases x1.5 */
+multUpgrade.addEventListener('click', () => {
+  if(state.clicks >= state.multCost){
+    state.clicks -= state.multCost;
+    state.multiplier *= 1.10; // +10%
+    state.multCost *= 1.5;
+    playUpgradeSound();
+    updateUI();
+  } else {
+    showFloatingText("Need " + Math.floor(state.multCost - state.clicks));
+  }
+});
 
-// ---------- Dodge Game ----------
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const dodgeScoreDisplay = document.getElementById('dodge-score');
-const dodgeLeaderboardList = document.getElementById('dodgeLeaderboardList');
+/* auto purchase: adds one auto clicker; cost increases +5% per purchase */
+autoUpgrade.addEventListener('click', () => {
+  if(state.clicks >= state.autoCost){
+    state.clicks -= state.autoCost;
+    state.autoOwned += 1;
+    state.autoCost *= 1.05;
+    playUpgradeSound();
+    updateUI();
+  } else {
+    showFloatingText("Need " + Math.floor(state.autoCost - state.clicks));
+  }
+});
 
-const player = { x: 180, y: 360, width: 40, height: 40, speed: 5 };
-const obstacles = [];
-let spawnTimer = 0;
-let dodgeScore = 0;
-let gameOver = false;
+/* crit upgrade: increases crit chance by +2% per purchase, cost scales */
+critUpgrade.addEventListener('click', () => {
+  const cost = 200 * Math.pow(1.8, state.critLevel);
+  if(state.clicks >= cost){
+    state.clicks -= cost;
+    state.critLevel += 1;
+    state.critChance = Math.min(0.5, state.critChance + 0.02); // cap 50%
+    playUpgradeSound();
+    updateUI();
+  } else {
+    showFloatingText("Need " + Math.floor(cost - state.clicks));
+  }
+});
 
-const keys = {};
-window.addEventListener('keydown', e => keys[e.key] = true);
-window.addEventListener('keyup', e => keys[e.key] = false);
+/* flat click add upgrade: add +1 flat per purchase, cost scales */
+moreUpgrade.addEventListener('click', () => {
+  const cost = 50 * Math.pow(1.6, state.flatUpgrades);
+  if(state.clicks >= cost){
+    state.clicks -= cost;
+    state.flatUpgrades += 1;
+    state.addPerClick += 1;
+    playUpgradeSound();
+    updateUI();
+  } else {
+    showFloatingText("Need " + Math.floor(cost - state.clicks));
+  }
+});
 
-function spawnObstacle() {
-  const width = Math.random()*50+20;
-  const x = Math.random()*(canvas.width-width);
-  obstacles.push({ x:x, y:0, width:width, height:20, speed: Math.random()*2+2 });
-}
+/* prestige: convert clicks into prestige points and reset core progress */
+prestigeBtn.addEventListener('click', () => {
+  // require a threshold
+  const threshold = 10000;
+  if(state.clicks < threshold){
+    alert("Need at least " + threshold + " clicks to prestige.");
+    return;
+  }
+  const prestigeGain = Math.floor(state.clicks / threshold);
+  if(!confirm("Prestige will reset your progress but give x"+prestigeGain+" permanent multiplier. Proceed?")) return;
+  state.prestigeCount += prestigeGain;
+  state.earnedPrestigeMult = 1 + 0.05 * state.prestigeCount;
+  // reset main fields while keeping achievements
+  state.clicks = 0;
+  state.multiplier = 1;
+  state.multCost = config.baseMultCost;
+  state.autoOwned = 0;
+  state.autoCost = config.autoBaseCost;
+  state.critChance = config.critBaseChance;
+  state.critLevel = 0;
+  state.addPerClick = 0;
+  state.flatUpgrades = 0;
+  playUpgradeSound();
+  updateUI();
+});
 
-function update() {
-  if(gameOver) return;
-  if(keys['ArrowLeft'] && player.x>0) player.x -= player.speed;
-  if(keys['ArrowRight'] && player.x+player.width<canvas.width) player.x += player.speed;
+/* reset button */
+resetBtn.addEventListener('click', () => {
+  if(!confirm("Reset all progress and achievements?")) return;
+  state = {
+    clicks:0, multiplier:1, multCost:config.baseMultCost, autoOwned:0, autoCost:config.autoBaseCost,
+    critChance:config.critBaseChance, critLevel:0, addPerClick:0, flatUpgrades:0,
+    prestigeCount:0, earnedPrestigeMult:1, lastTick:Date.now(), achievements:{}, particles:[]
+  };
+  saveState();
+  updateUI();
+});
 
-  spawnTimer++;
-  if(spawnTimer>50){ spawnObstacle(); spawnTimer=0; }
+/* sync / submit to global leaderboard (if API available) */
+syncBtn.addEventListener('click', async () => {
+  if(!API_URL){
+    alert("Global leaderboard not configured. Set API_URL in the script to your backend URL.");
+    return;
+  }
+  const name = nameInput.value.trim() || ("Player" + Math.floor(Math.random()*999));
+  try{
+    const res = await fetch(API_URL + '/leaderboard/clicker', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name, score: Math.floor(state.clicks) })
+    });
+    const ret = await res.json();
+    if(ret.ok) alert("Submitted! Check global leaderboard.");
+    fetchGlobalLeaderboard();
+  }catch(e){
+    alert("Failed to submit: "+e.message);
+  }
+});
 
-  for(let i=obstacles.length-1;i>=0;i--){
-    const obs = obstacles[i];
-    obs.y += obs.speed;
-    if(player.x<obs.x+obs.width && player.x+player.width>obs.x &&
-       player.y<obs.y+obs.height && player.y+player.height>obs.y){
-      gameOver=true;
-      saveDodgeScore(dodgeScore);
+/* ACHIEVEMENTS */
+const ACHS = [
+  { id:'firstclick', name:'First Click', desc:'Click once', check: s => s.clicks >= 1, reward: () => 0 },
+  { id:'hundred', name:'100 Clicks', desc:'Reach 100 clicks', check: s => s.clicks >= 100, reward: () => 0 },
+  { id:'clickerPro', name:'Clicker Pro', desc:'Click 1000 total', check: s => s.clicks >= 1000, reward: () => 0 },
+  { id:'autoOwner', name:'Auto Owner', desc:'Buy 1 Auto Clicker', check: s => s.autoOwned >= 1, reward: () => 0 },
+  { id:'prestiger', name:'Prestiger', desc:'Prestige once', check: s => s.prestigeCount >= 1, reward: () => 0 },
+];
+
+function checkAchievements(){
+  let changed=false;
+  ACHS.forEach(a=>{
+    if(!state.achievements[a.id] && a.check(state)){
+      state.achievements[a.id] = true;
+      changed=true;
+      // reward: small click bonus + sound + floating
+      state.clicks += 50;
+      showFloatingText("Achievement: " + a.name);
+      playUpgradeSound();
     }
-    if(obs.y>canvas.height){ obstacles.splice(i,1); dodgeScore++; }
-  }
-
-  dodgeScoreDisplay.textContent = "Score: "+dodgeScore;
+  });
+  if(changed) saveState();
 }
 
-function draw() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle='cyan';
-  ctx.fillRect(player.x, player.y, player.width, player.height);
-  ctx.fillStyle='red';
-  obstacles.forEach(obs=>ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
-
-  if(gameOver){
-    ctx.fillStyle='white';
-    ctx.font='30px Arial';
-    ctx.fillText('GAME OVER', 100, 200);
-  }
-}
-
-function gameLoop(){
-  update();
-  draw();
-  requestAnimationFrame(gameLoop);
-}
-gameLoop();
-
-// Leaderboard functions for Dodge
-function saveDodgeScore(score){
-  let scores = JSON.parse(localStorage.getItem('dodgeLeaderboard')||'[]');
-  scores.push(score);
-  scores.sort((a,b)=>b-a);
-  scores = scores.slice(0,5);
-  localStorage.setItem('dodgeLeaderboard', JSON.stringify(scores));
-  displayDodgeLeaderboard();
-}
-
-function displayDodgeLeaderboard(){
-  const scores = JSON.parse(localStorage.getItem('dodgeLeaderboard')||'[]');
-  dodgeLeaderboardList.innerHTML = '';
-  scores.forEach(s=>{
+function renderAchievements(){
+  achList.innerHTML = '';
+  ACHS.forEach(a=>{
     const li = document.createElement('li');
-    li.textContent = s;
-    dodgeLeaderboardList.appendChild(li);
+    li.style.display='flex';
+    li.style.justifyContent='space-between';
+    li.style.alignItems='center';
+    li.style.padding='6px';
+    li.style.borderRadius='8px';
+    li.style.background = state.achievements[a.id] ? 'linear-gradient(90deg, rgba(122,252,255,0.06), rgba(0,210,255,0.06))' : 'transparent';
+    li.innerHTML = `<div><strong>${a.name}</strong><div class="mini">${a.desc}</div></div><div class="mini">${state.achievements[a.id] ? 'Unlocked' : 'Locked'}</div>`;
+    achList.appendChild(li);
   });
 }
-displayDodgeLeaderboard();
-</script>
 
+/* LOCAL LEADERBOARD: store top 10 local scores by clicks */
+function updateLocalLeaderboardIfNeeded(){
+  const curScore = Math.floor(state.clicks);
+  let lb = JSON.parse(localStorage.getItem(LOCAL_LB_KEY) || '[]');
+  // if current score fits in top 10 and is > 0
+  if(curScore > 0){
+    lb.push({ name: 'You', score: curScore, ts: Date.now() });
+    lb = lb.sort((a,b)=>b.score - a.score).slice(0,10);
+    localStorage.setItem(LOCAL_LB_KEY, JSON.stringify(lb));
+  }
+}
+
+function renderLocalLeaderboard(){
+  const lb = JSON.parse(localStorage.getItem(LOCAL_LB_KEY) || '[]');
+  localLeaderboard.innerHTML = '';
+  if(lb.length === 0){
+    localLeaderboard.innerHTML = '<div class="mini muted">No local scores yet — play to generate one.</div>';
+    return;
+  }
+  lb.forEach((it,idx)=>{
+    const li = document.createElement('li');
+    li.className='leader-item';
+    li.innerHTML = `<div>#${idx+1} ${it.name}</div><div>${formatNum(it.score)}</div>`;
+    localLeaderboard.appendChild(li);
+  });
+}
+
+/* GLOBAL LEADERBOARD fetch */
+async function fetchGlobalLeaderboard(){
+  if(!API_URL) return;
+  try{
+    const r = await fetch(API_URL + '/leaderboard/clicker');
+    if(!r.ok) return;
+    const data = await r.json();
+    // data: array of {name,score}
+    // append below local lb
+    const header = document.createElement('li');
+    header.className='leader-item';
+    header.innerHTML = `<div style="opacity:.7">--- Global Top ---</div><div></div>`;
+    localLeaderboard.appendChild(header);
+
+    data.forEach((it,idx)=>{
+      const li = document.createElement('li');
+      li.className='leader-item';
+      li.innerHTML = `<div>#${idx+1} ${escapeHtml(it.name)}</div><div>${formatNum(it.score)}</div>`;
+      localLeaderboard.appendChild(li);
+    });
+  }catch(e){}
+}
+
+/* simple escape for name */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+
+/* bursts */
+function burstParticles(){
+  for(let i=0;i<6;i++){
+    setTimeout(()=>createParticle("+" + Math.floor( (state.multiplier + state.addPerClick) * state.earnedPrestigeMult )), i*20);
+  }
+}
+
+/* ============================================
+   INIT
+   ============================================ */
+
+loadState();
+updateUI();
+checkAchievements();
+renderLocalLeaderboard();
+if(API_URL) fetchGlobalLeaderboard();
+
+/* auto-save every 2 seconds and on unload */
+setInterval(saveState, 2000);
+window.addEventListener('beforeunload', saveState);
+
+/* keyboard support */
+window.addEventListener('keydown', e => {
+  if(e.key === ' ') { e.preventDefault(); clickAction(); }
+});
+
+</script>
 </body>
 </html>
