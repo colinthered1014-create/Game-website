@@ -29,155 +29,34 @@
     padding:20px;
   }
 
-  .wrap{
-    width:100%;
-    max-width:1100px;
-    display:grid;
-    grid-template-columns: 1fr 380px;
-    gap:20px;
-  }
+  .wrap{width:100%;max-width:1100px;display:grid;grid-template-columns: 1fr 380px;gap:20px;}
+  @media (max-width:980px){.wrap{grid-template-columns: 1fr; padding-bottom:40px}}
 
-  @media (max-width:980px){
-    .wrap{grid-template-columns: 1fr; padding-bottom:40px}
-  }
+  .card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 8px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);}
 
-  .card{
-    background:var(--card);
-    border-radius:18px;
-    padding:18px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.04);
-  }
+  .play-area{display:flex;flex-direction:column;gap:14px;align-items:center;padding:26px;}
+  .title{display:flex;width:100%;justify-content:space-between;align-items:center;gap:12px;}
+  .title h1{margin:0;font-size:20px;letter-spacing:0.4px;}
+  .stats{text-align:right;font-size:13px;color:var(--muted);}
 
-  /* Left column */
-  .play-area{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-    align-items:center;
-    padding:26px;
-  }
+  .big-button{width:230px;height:230px;border-radius:50%;border:none;background: radial-gradient(circle at 35% 25%, var(--accent-2), var(--accent));box-shadow:0 12px 30px rgba(0,210,255,0.12), 0 6px 12px rgba(0,0,0,0.4),0 0 40px rgba(0,210,255,0.08) inset;cursor:pointer;font-weight:900;font-size:28px;color:#041018;transition: transform .08s ease;position:relative;overflow:visible;display:flex;align-items:center;justify-content:center;user-select:none;}
+  .big-button:active{transform: scale(.98)}
 
-  .title{
-    display:flex;
-    width:100%;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-  }
-
-  .title h1{
-    margin:0;
-    font-size:20px;
-    letter-spacing:0.4px;
-  }
-  .stats{
-    text-align:right;
-    font-size:13px;
-    color:var(--muted);
-  }
-
-  .big-button{
-    width:230px;
-    height:230px;
-    border-radius:50%;
-    border:none;
-    background: radial-gradient(circle at 35% 25%, var(--accent-2), var(--accent));
-    box-shadow: 0 12px 30px rgba(0,210,255,0.12), 0 6px 12px rgba(0,0,0,0.4), 0 0 40px rgba(0,210,255,0.08) inset;
-    cursor:pointer;
-    font-weight:900;
-    font-size:28px;
-    color:#041018;
-    transition: transform .08s ease;
-    position:relative;
-    overflow:visible;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    user-select:none;
-  }
-
-  .big-button:active{ transform: scale(.98) }
   .small-row{ display:flex; gap:12px; width:100%; justify-content:center; flex-wrap:wrap; }
-
-  .upgrade{
-    background:var(--glass);
-    padding:12px;
-    border-radius:12px;
-    text-align:left;
-    min-width:180px;
-    max-width:100%;
-    cursor:pointer;
-    border:1px solid rgba(255,255,255,0.03);
-    transition: transform .12s, background .12s;
-  }
-
+  .upgrade{background:var(--glass);padding:12px;border-radius:12px;text-align:left;min-width:180px;max-width:100%;cursor:pointer;border:1px solid rgba(255,255,255,0.03);transition: transform .12s, background .12s;}
   .upgrade:hover{ transform: translateY(-4px); background: rgba(255,255,255,0.09); }
-
   .upgrade .title { font-weight:700; font-size:14px; }
   .upgrade .meta { font-size:12px; color:var(--muted); margin-top:6px; }
 
   .row-between { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-
-  /* Right column - leaderboards, achievements */
-  .side{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-  }
-
-  .leaderboard-list, .ach-list{
-    list-style:none;
-    padding:10px;
-    margin:0;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
-
-  .leader-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background: rgba(255,255,255,0.03);
-    padding:8px;
-    border-radius:8px;
-    font-size:14px;
-  }
-
-  .controls{
-    display:flex;
-    gap:10px;
-    margin-top:8px;
-    flex-wrap:wrap;
-  }
-  .btn{
-    padding:8px 12px;
-    border-radius:10px;
-    border:none;
-    background:rgba(255,255,255,0.06);
-    color:inherit;
-    cursor:pointer;
-  }
-
+  .side{display:flex;flex-direction:column;gap:14px;}
+  .leaderboard-list, .ach-list{list-style:none;padding:10px;margin:0;display:flex;flex-direction:column;gap:8px;}
+  .leader-item{display:flex;justify-content:space-between;align-items:center;background: rgba(255,255,255,0.03);padding:8px;border-radius:8px;font-size:14px;}
+  .controls{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
+  .btn{padding:8px 12px;border-radius:10px;border:none;background:rgba(255,255,255,0.06);color:inherit;cursor:pointer;}
   .muted{ color:var(--muted); font-size:13px; }
-
-  .mini{
-    font-size:12px;
-    color:var(--muted);
-  }
-
-  /* floating + particles */
-  .particle{
-    position:absolute;
-    pointer-events:none;
-    font-weight:800;
-    color: #baf7ff;
-    text-shadow: 0 6px 16px rgba(0,0,0,0.45);
-    transform-origin:center;
-    will-change: transform, opacity;
-  }
-
+  .mini{font-size:12px;color:var(--muted);}
+  .particle{position:absolute;pointer-events:none;font-weight:800;color: #baf7ff;text-shadow: 0 6px 16px rgba(0,0,0,0.45);transform-origin:center;will-change: transform, opacity;}
   footer{ text-align:center; color:var(--muted); font-size:13px; margin-top:12px; }
 </style>
 </head>
@@ -194,7 +73,6 @@
 
     <div style="position:relative; width:100%; display:flex; justify-content:center; margin-top:6px;">
       <button id="bigBtn" class="big-button">CLICK</button>
-      <!-- particles injected dynamically -->
     </div>
 
     <div class="small-row">
@@ -227,7 +105,7 @@
       <button id="syncBtn" class="btn">Sync to Global Leaderboard</button>
     </div>
 
-    <footer class="mini">Saved locally. For global leaderboard, set Firebase config below.</footer>
+    <footer class="mini">Saved locally. For global leaderboard, deploy backend and set API URL.</footer>
   </div>
 
   <div class="card side">
@@ -254,74 +132,9 @@
   </div>
 </div>
 
-<!-- ===== Firebase module (put your config values below) ===== -->
+<!-- MAIN GAME SCRIPT -->
 <script type="module">
-  // Firebase CDN imports
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit }
-    from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
-
-  // --- REPLACE the following with your Firebase project's config ---
-  const firebaseConfig = {
-    apiKey: "YOUR_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "NUMBER",
-    appId: "APP_ID"
-  };
-  // ---------------------------------------------------------------
-
-  // If the user hasn't set config, don't initialize (keeps local-only functionality)
-  const isConfigSet = firebaseConfig && firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId;
-  if(isConfigSet){
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Save score to Firestore collection 'leaderboard'
-    async function submitScore(name, score){
-      try{
-        await addDoc(collection(db, "leaderboard"), {
-          name: String(name).slice(0,32),
-          score: Number(score),
-          ts: Date.now()
-        });
-        return { ok:true };
-      }catch(e){
-        return { ok:false, error: e.message };
-      }
-    }
-
-    // Load top scoreboard
-    async function getTopScores(limitN = 20){
-      const q = query(
-        collection(db, "leaderboard"),
-        orderBy("score", "desc"),
-        limit(limitN)
-      );
-      const snapshot = await getDocs(q);
-      const data = [];
-      snapshot.forEach(doc => data.push(doc.data()));
-      return data;
-    }
-
-    // expose to window for main script to use
-    window.submitScore = submitScore;
-    window.getTopScores = getTopScores;
-  } else {
-    // not configured: expose dummy functions that throw helpful message
-    window.submitScore = async () => ({ ok:false, error: 'Firebase config not set' });
-    window.getTopScores = async () => [];
-  }
-</script>
-
-<!-- ===== Main game script (uses window.submitScore / getTopScores if available) ===== -->
-<script>
-/* ============================================
-   GAME STATE & CONFIG
-   ============================================ */
-
-const API_URL = ""; // unused when Firebase is set
+const API_URL = ""; // Set to your backend API URL if using global leaderboard
 const GAME_KEY = "ultimate-clicker";
 const LOCAL_LB_KEY = "clicker_local_lb_v1";
 
@@ -331,447 +144,138 @@ const config = {
   critBaseChance: 0.05,
   critMult: 2,
   autoGainPer: 1,
-  offlineMaxSeconds: 60 * 60 * 24, // cap offline at 24h
+  offlineMaxSeconds: 60 * 60 * 24,
 };
 
 let state = {
-  clicks: 0,
-  multiplier: 1,
-  multCost: config.baseMultCost,
-  autoOwned: 0,
-  autoCost: config.autoBaseCost,
-  critChance: config.critBaseChance,
-  critLevel: 0,
-  addPerClick: 0,
-  flatUpgrades: 0,
-  prestigeCount: 0,
-  earnedPrestigeMult: 1,
-  lastTick: Date.now(),
-  achievements: {},
-  particles: [],
+  clicks:0,multiplier:1,multCost:config.baseMultCost,autoOwned:0,autoCost:config.autoBaseCost,
+  critChance:config.critBaseChance,critLevel:0,addPerClick:0,flatUpgrades:0,
+  prestigeCount:0,earnedPrestigeMult:1,lastTick:Date.now(),achievements:{},particles:[]
 };
 
-/* helpers */
-const $ = id => document.getElementById(id);
+const $ = id=>document.getElementById(id);
+const bigBtn=$("bigBtn"), clickCount=$("clickCount"), perSec=$("perSec"),
+multCostEl=$("multCost"), multValueEl=$("multValue"), autoCostEl=$("autoCost"),
+autoOwnedEl=$("autoOwned"), critChanceEl=$("critChance"), critMultEl=$("critMult"),
+flatAddEl=$("flatAdd"), prestigeBtn=$("prestigeBtn"), prestigeMultEl=$("prestigeMult"),
+nameInput=$("nameInput"), submitGlobal=$("submitGlobal"), syncBtn=$("syncBtn"),
+resetBtn=$("resetBtn"), multUpgrade=$("multUpgrade"), autoUpgrade=$("autoUpgrade"),
+critUpgrade=$("critUpgrade"), moreUpgrade=$("moreUpgrade"),
+localLeaderboard=$("localLeaderboard"), achList=$("achList");
 
-function saveState(){
-  localStorage.setItem(GAME_KEY, JSON.stringify(state));
-  updateLocalLeaderboardIfNeeded();
-}
-function loadState(){
-  const s = localStorage.getItem(GAME_KEY);
-  if(s){
-    try{
-      const parsed = JSON.parse(s);
-      state = Object.assign(state, parsed);
-    }catch(e){}
-  }
-  // offline earnings calc
-  const now = Date.now();
-  const diff = Math.floor((now - (state.lastTick||now))/1000);
-  state.lastTick = now;
-  if(diff>0){
-    const sec = Math.min(diff, config.offlineMaxSeconds);
-    const gained = sec * state.autoOwned * config.autoGainPer * state.earnedPrestigeMult;
-    if(gained>0) showFloatingText("+"+formatNum(gained), 200);
-    state.clicks += gained;
-    $("offlineInfo").textContent = sec;
-  } else {
-    $("offlineInfo").textContent = 0;
-  }
-}
+function saveState(){localStorage.setItem(GAME_KEY,JSON.stringify(state));updateLocalLeaderboardIfNeeded();}
+function loadState(){const s=localStorage.getItem(GAME_KEY);if(s){try{const parsed=JSON.parse(s);state=Object.assign(state,parsed);}catch(e){}}
+const now=Date.now();const diff=Math.floor((now-(state.lastTick||now))/1000);state.lastTick=now;
+if(diff>0){const sec=Math.min(diff,config.offlineMaxSeconds);const gained=sec*state.autoOwned*config.autoGainPer*state.earnedPrestigeMult;if(gained>0) showFloatingText("+"+gained,200);state.clicks+=gained;} $("offlineInfo").textContent=diff>0?diff:0;}
 
-/* basic formatting */
-function formatNum(n){
-  if(n>=1e9) return (n/1e9).toFixed(2)+'B';
-  if(n>=1e6) return (n/1e6).toFixed(2)+'M';
-  if(n>=1e3) return (n/1e3).toFixed(1)+'k';
-  return Math.floor(n);
-}
+function formatNum(n){if(n>=1e9)return(n/1e9).toFixed(2)+'B';if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e1)+'k';return Math.floor(n);}
 
-/* ============================================
-   UI refs & initial display
-   ============================================ */
-
-const bigBtn = $("bigBtn");
-const clickCount = $("clickCount");
-const perSec = $("perSec");
-const multCostEl = $("multCost");
-const multValueEl = $("multValue");
-const autoCostEl = $("autoCost");
-const autoOwnedEl = $("autoOwned");
-const critChanceEl = $("critChance");
-const critMultEl = $("critMult");
-const flatAddEl = $("flatAdd");
-const localLeaderboard = $("localLeaderboard");
-const achList = $("achList");
-const prestigeBtn = $("prestigeBtn");
-const prestigeMultEl = $("prestigeMult");
-const nameInput = $("nameInput");
-const submitGlobal = $("submitGlobal");
-const syncBtn = $("syncBtn");
-const resetBtn = $("resetBtn");
-const multUpgrade = $("multUpgrade");
-const autoUpgrade = $("autoUpgrade");
-const critUpgrade = $("critUpgrade");
-const moreUpgrade = $("moreUpgrade");
-
-/* sound using WebAudio */
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playClickSound(pitch=1, short=true){
-  const o = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  o.type = 'sine';
-  o.frequency.value = 400 * pitch;
-  g.gain.value = short ? 0.08 : 0.12;
-  o.connect(g); g.connect(audioCtx.destination);
-  o.start();
-  o.stop(audioCtx.currentTime + (short?0.06:0.12));
-}
-function playUpgradeSound(){
-  const o = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  o.type='triangle';
-  o.frequency.value = 600;
-  g.gain.value = 0.12;
-  o.connect(g); g.connect(audioCtx.destination);
-  o.start();
-  o.stop(audioCtx.currentTime + 0.18);
-}
-
-/* ============================================
-   PARTICLES (floating +n)
-   ============================================ */
-
-function createParticle(text, x=window.innerWidth/2, y=window.innerHeight/2){
-  const el = document.createElement('div');
-  el.className='particle';
-  el.textContent = text;
-  document.body.appendChild(el);
-  const sx = (Math.random()*120-60);
-  let life = 900 + Math.random()*400;
-  el.style.left = (x - 12) + 'px';
-  el.style.top = (y - 30) + 'px';
-  el.style.opacity = 1;
-  el.style.transform = 'translateY(0) scale(1)';
-  const start = performance.now();
-  function tick(now){
-    const t = now - start;
-    const prog = t / life;
-    el.style.transform = `translate(${sx*prog}px, ${-80*prog}px) scale(${1 - 0.3*prog})`;
-    el.style.opacity = String(1 - prog);
-    if(prog<1) requestAnimationFrame(tick);
-    else { el.remove(); }
-  }
-  requestAnimationFrame(tick);
-}
-
-function showFloatingText(text, duration=800){
-  createParticle(text, bigBtn.getBoundingClientRect().left + bigBtn.offsetWidth/2,
-                      bigBtn.getBoundingClientRect().top + 80);
-}
-
-/* ============================================
-   GAME LOGIC: click, upgrades, autos, crits
-   ============================================ */
+function showFloatingText(text){const rect=bigBtn.getBoundingClientRect();const x=rect.left+bigBtn.offsetWidth/2;const y=rect.top+80;const el=document.createElement('div');el.className='particle';el.textContent=text;document.body.appendChild(el);
+let life=900+Math.random()*400;el.style.left=x+'px';el.style.top=y+'px';el.style.opacity=1;el.style.transform='translateY(0) scale(1)';const start=performance.now();
+function tick(now){const t=now-start;const prog=t/life;el.style.transform=`translate(${(Math.random()*120-60)*prog}px, ${-80*prog}px) scale(${1-0.3*prog})`;el.style.opacity=String(1-prog);if(prog<1) requestAnimationFrame(tick);else el.remove();} requestAnimationFrame(tick);}
 
 function updateUI(){
-  clickCount.textContent = "Clicks: " + formatNum(state.clicks);
-  perSec.textContent = "+" + formatNum(state.autoOwned * config.autoGainPer * state.earnedPrestigeMult) + " / sec";
-  multCostEl.textContent = Math.floor(state.multCost);
-  multValueEl.textContent = state.multiplier.toFixed(2);
-  autoCostEl.textContent = Math.floor(state.autoCost);
-  autoOwnedEl.textContent = state.autoOwned;
-  critChanceEl.textContent = Math.round(state.critChance*100) + "%";
-  critMultEl.textContent = "x" + config.critMult;
-  flatAddEl.textContent = state.addPerClick;
-  prestigeMultEl.textContent = state.earnedPrestigeMult;
-  // achievements list
-  renderAchievements();
-  renderLocalLeaderboard();
-  saveState();
+  clickCount.textContent="Clicks: "+formatNum(state.clicks);
+  perSec.textContent="+"+formatNum(state.autoOwned*config.autoGainPer*state.earnedPrestigeMult)+" / sec";
+  multCostEl.textContent=Math.floor(state.multCost);
+  multValueEl.textContent=state.multiplier.toFixed(2);
+  autoCostEl.textContent=Math.floor(state.autoCost);
+  autoOwnedEl.textContent=state.autoOwned;
+  critChanceEl.textContent=Math.round(state.critChance*100)+"%";
+  critMultEl.textContent="x"+config.critMult;
+  flatAddEl.textContent=state.addPerClick;
+  prestigeMultEl.textContent=state.earnedPrestigeMult;
+  renderAchievements();renderLocalLeaderboard();saveState();
 }
 
 function clickAction(){
-  // chance for critical
-  let crit = Math.random() < state.critChance;
-  let base = state.multiplier + state.addPerClick;
-  let gained = base * state.earnedPrestigeMult;
-  if(crit) gained *= config.critMult;
-  // small randomness for feel
-  gained = Math.max(0.01, gained);
-  state.clicks += gained;
-  // visual and audio
-  showFloatingText((crit?("CRIT +" + Math.floor(gained)) : ("+" + Math.floor(gained))), 800);
-  playClickSound(crit?1.5:1, !crit);
-  // achievements
-  checkAchievements();
-  // particle burst small
-  burstParticles();
+  let crit=Math.random()<state.critChance;
+  let base=state.multiplier+state.addPerClick;
+  let gained=base*state.earnedPrestigeMult;
+  if(crit) gained*=config.critMult;
+  gained=Math.max(0.01,gained);
+  state.clicks+=gained;
+  showFloatingText(crit?("CRIT +"+Math.floor(gained)):"+"+Math.floor(gained));
   updateUI();
 }
 
-/* handle big button */
-bigBtn.addEventListener('click', () => {
-  clickAction();
+bigBtn.addEventListener('click',clickAction);
+
+setInterval(()=>{const gain=state.autoOwned*config.autoGainPer*state.earnedPrestigeMult;if(gain>0){state.clicks+=gain;if(gain>=1) showFloatingText("+"+formatNum(gain));}updateUI();},1000);
+
+multUpgrade.addEventListener('click',()=>{
+  if(state.clicks>=state.multCost){state.clicks-=state.multCost;state.multiplier*=1.1;state.multCost*=1.5;updateUI();} else showFloatingText("Need "+Math.floor(state.multCost-state.clicks));
 });
 
-/* auto tick */
-setInterval(() => {
-  const gain = state.autoOwned * config.autoGainPer * state.earnedPrestigeMult;
-  if(gain>0){
-    state.clicks += gain;
-    if(gain>=1) showFloatingText("+"+formatNum(gain));
-  }
-  updateUI();
-}, 1000);
-
-/* multiplier purchase: +10% multiplier each purchase, cost increases x1.5 */
-multUpgrade.addEventListener('click', () => {
-  if(state.clicks >= state.multCost){
-    state.clicks -= state.multCost;
-    state.multiplier *= 1.10; // +10%
-    state.multCost *= 1.5;
-    playUpgradeSound();
-    updateUI();
-  } else {
-    showFloatingText("Need " + Math.floor(state.multCost - state.clicks));
-  }
+autoUpgrade.addEventListener('click',()=>{
+  if(state.clicks>=state.autoCost){state.clicks-=state.autoCost;state.autoOwned+=1;state.autoCost*=1.05;updateUI();} else showFloatingText("Need "+Math.floor(state.autoCost-state.clicks));
 });
 
-/* auto purchase: adds one auto clicker; cost increases +5% per purchase */
-autoUpgrade.addEventListener('click', () => {
-  if(state.clicks >= state.autoCost){
-    state.clicks -= state.autoCost;
-    state.autoOwned += 1;
-    state.autoCost *= 1.05;
-    playUpgradeSound();
-    updateUI();
-  } else {
-    showFloatingText("Need " + Math.floor(state.autoCost - state.clicks));
-  }
+critUpgrade.addEventListener('click',()=>{
+  const cost=200*Math.pow(1.8,state.critLevel);
+  if(state.clicks>=cost){state.clicks-=cost;state.critLevel+=1;state.critChance=Math.min(0.5,state.critChance+0.02);updateUI();} else showFloatingText("Need "+Math.floor(cost-state.clicks));
 });
 
-/* crit upgrade: increases crit chance by +2% per purchase, cost scales */
-critUpgrade.addEventListener('click', () => {
-  const cost = 200 * Math.pow(1.8, state.critLevel);
-  if(state.clicks >= cost){
-    state.clicks -= cost;
-    state.critLevel += 1;
-    state.critChance = Math.min(0.5, state.critChance + 0.02); // cap 50%
-    playUpgradeSound();
-    updateUI();
-  } else {
-    showFloatingText("Need " + Math.floor(cost - state.clicks));
-  }
+moreUpgrade.addEventListener('click',()=>{
+  const cost=50*Math.pow(1.6,state.flatUpgrades);
+  if(state.clicks>=cost){state.clicks-=cost;state.flatUpgrades+=1;state.addPerClick+=1;updateUI();} else showFloatingText("Need "+Math.floor(cost-state.clicks));
 });
 
-/* flat click add upgrade: add +1 flat per purchase, cost scales */
-moreUpgrade.addEventListener('click', () => {
-  const cost = 50 * Math.pow(1.6, state.flatUpgrades);
-  if(state.clicks >= cost){
-    state.clicks -= cost;
-    state.flatUpgrades += 1;
-    state.addPerClick += 1;
-    playUpgradeSound();
-    updateUI();
-  } else {
-    showFloatingText("Need " + Math.floor(cost - state.clicks));
-  }
-});
-
-/* prestige: convert clicks into prestige points and reset core progress */
-prestigeBtn.addEventListener('click', () => {
-  // require a threshold
-  const threshold = 10000;
-  if(state.clicks < threshold){
-    alert("Need at least " + threshold + " clicks to prestige.");
-    return;
-  }
-  const prestigeGain = Math.floor(state.clicks / threshold);
-  if(!confirm("Prestige will reset your progress but give x"+prestigeGain+" permanent multiplier. Proceed?")) return;
-  state.prestigeCount += prestigeGain;
-  state.earnedPrestigeMult = 1 + 0.05 * state.prestigeCount;
-  // reset main fields while keeping achievements
-  state.clicks = 0;
-  state.multiplier = 1;
-  state.multCost = config.baseMultCost;
-  state.autoOwned = 0;
-  state.autoCost = config.autoBaseCost;
-  state.critChance = config.critBaseChance;
-  state.critLevel = 0;
-  state.addPerClick = 0;
-  state.flatUpgrades = 0;
-  playUpgradeSound();
+prestigeBtn.addEventListener('click',()=>{
+  const threshold=10000;if(state.clicks<threshold){alert("Need at least "+threshold+" clicks to prestige."); return;}
+  const prestigeGain=Math.floor(state.clicks/threshold);if(!confirm("Prestige will reset your progress but give x"+prestigeGain+" permanent multiplier. Proceed?")) return;
+  state.prestigeCount+=prestigeGain;
+  state.earnedPrestigeMult=1+0.05*state.prestigeCount;
+  state.clicks=0; state.multiplier=1; state.multCost=config.baseMultCost; state.autoOwned=0; state.autoCost=config.autoBaseCost;
+  state.critChance=config.critBaseChance; state.critLevel=0; state.addPerClick=0; state.flatUpgrades=0;
   updateUI();
 });
 
-/* reset button */
-resetBtn.addEventListener('click', () => {
+resetBtn.addEventListener('click',()=>{
   if(!confirm("Reset all progress and achievements?")) return;
-  state = {
-    clicks:0, multiplier:1, multCost:config.baseMultCost, autoOwned:0, autoCost:config.autoBaseCost,
-    critChance:config.critBaseChance, critLevel:0, addPerClick:0, flatUpgrades:0,
-    prestigeCount:0, earnedPrestigeMult:1, lastTick:Date.now(), achievements:{}, particles:[]
-  };
-  saveState();
-  updateUI();
+  state={clicks:0,multiplier:1,multCost:config.baseMultCost,autoOwned:0,autoCost:config.autoBaseCost,
+  critChance:config.critBaseChance,critLevel:0,addPerClick:0,flatUpgrades:0,
+  prestigeCount:0,earnedPrestigeMult:1,lastTick:Date.now(),achievements:{},particles:[]};
+  saveState(); updateUI();
 });
 
-/* sync / submit to global leaderboard (uses Firebase if configured) */
-syncBtn.addEventListener('click', async () => {
-  const name = nameInput.value.trim() || ("Player" + Math.floor(Math.random()*999));
-  // if firebase functions are present (set if you filled config), use them
-  if(window.submitScore && typeof window.submitScore === 'function'){
-    const res = await window.submitScore(name, Math.floor(state.clicks));
-    if(res && res.ok){
-      alert("Submitted to global leaderboard!");
-      await fetchAndShowGlobal();
-    } else {
-      alert("Failed to submit global: " + (res && res.error ? res.error : "unknown"));
-    }
-    return;
-  }
-
-  // fallback: no Firebase configured
-  alert("Global leaderboard not configured. Fill Firebase config at top of file.");
-});
-
-/* also bind Submit button next to name input */
-submitGlobal.addEventListener('click', async () => {
-  const name = nameInput.value.trim() || ("Player" + Math.floor(Math.random()*999));
-  if(window.submitScore && typeof window.submitScore === 'function'){
-    const res = await window.submitScore(name, Math.floor(state.clicks));
-    if(res && res.ok){
-      alert("Submitted to global leaderboard!");
-      await fetchAndShowGlobal();
-    } else {
-      alert("Failed to submit global: " + (res && res.error ? res.error : "unknown"));
-    }
-    return;
-  }
-  alert("Global leaderboard not configured. Fill Firebase config at top of file.");
-});
-
-/* ACHIEVEMENTS */
-const ACHS = [
-  { id:'firstclick', name:'First Click', desc:'Click once', check: s => s.clicks >= 1, reward: () => 0 },
-  { id:'hundred', name:'100 Clicks', desc:'Reach 100 clicks', check: s => s.clicks >= 100, reward: () => 0 },
-  { id:'clickerPro', name:'Clicker Pro', desc:'Click 1000 total', check: s => s.clicks >= 1000, reward: () => 0 },
-  { id:'autoOwner', name:'Auto Owner', desc:'Buy 1 Auto Clicker', check: s => s.autoOwned >= 1, reward: () => 0 },
-  { id:'prestiger', name:'Prestiger', desc:'Prestige once', check: s => s.prestigeCount >= 1, reward: () => 0 },
-];
-
-function checkAchievements(){
-  let changed=false;
-  ACHS.forEach(a=>{
-    if(!state.achievements[a.id] && a.check(state)){
-      state.achievements[a.id] = true;
-      changed=true;
-      // reward: small click bonus + sound + floating
-      state.clicks += 50;
-      showFloatingText("Achievement: " + a.name);
-      playUpgradeSound();
-    }
-  });
-  if(changed) saveState();
-}
-
-function renderAchievements(){
-  achList.innerHTML = '';
-  ACHS.forEach(a=>{
-    const li = document.createElement('li');
-    li.style.display='flex';
-    li.style.justifyContent='space-between';
-    li.style.alignItems='center';
-    li.style.padding='6px';
-    li.style.borderRadius='8px';
-    li.style.background = state.achievements[a.id] ? 'linear-gradient(90deg, rgba(122,252,255,0.06), rgba(0,210,255,0.06))' : 'transparent';
-    li.innerHTML = `<div><strong>${a.name}</strong><div class="mini">${a.desc}</div></div><div class="mini">${state.achievements[a.id] ? 'Unlocked' : 'Locked'}</div>`;
-    achList.appendChild(li);
-  });
-}
-
-/* LOCAL LEADERBOARD: store top 10 local scores by clicks */
 function updateLocalLeaderboardIfNeeded(){
-  const curScore = Math.floor(state.clicks);
-  let lb = JSON.parse(localStorage.getItem(LOCAL_LB_KEY) || '[]');
-  // if current score fits in top 10 and is > 0
-  if(curScore > 0){
-    lb.push({ name: 'You', score: curScore, ts: Date.now() });
-    lb = lb.sort((a,b)=>b.score - a.score).slice(0,10);
-    localStorage.setItem(LOCAL_LB_KEY, JSON.stringify(lb));
-  }
+  const curScore=Math.floor(state.clicks);
+  let lb=JSON.parse(localStorage.getItem(LOCAL_LB_KEY)||'[]');
+  if(curScore>0){lb.push({name:'You',score:curScore,ts:Date.now()});lb=lb.sort((a,b)=>b.score-a.score).slice(0,10);localStorage.setItem(LOCAL_LB_KEY,JSON.stringify(lb));}
 }
 
 function renderLocalLeaderboard(){
-  const lb = JSON.parse(localStorage.getItem(LOCAL_LB_KEY) || '[]');
-  localLeaderboard.innerHTML = '';
-  if(lb.length === 0){
-    localLeaderboard.innerHTML = '<div class="mini muted">No local scores yet — play to generate one.</div>';
-    return;
-  }
+  const lb=JSON.parse(localStorage.getItem(LOCAL_LB_KEY)||'[]');
+  localLeaderboard.innerHTML='';
+  if(lb.length===0){localLeaderboard.innerHTML='<div class="mini muted">No local scores yet — play to generate one.</div>'; return;}
   lb.forEach((it,idx)=>{
-    const li = document.createElement('li');
-    li.className='leader-item';
-    li.innerHTML = `<div>#${idx+1} ${it.name}</div><div>${formatNum(it.score)}</div>`;
+    const li=document.createElement('li'); li.className='leader-item';
+    li.innerHTML=`<div>#${idx+1} ${it.name}</div><div>${formatNum(it.score)}</div>`;
     localLeaderboard.appendChild(li);
   });
 }
 
-/* GLOBAL LEADERBOARD fetch (uses getTopScores() from Firebase if available) */
-async function fetchAndShowGlobal(){
-  if(window.getTopScores && typeof window.getTopScores === 'function'){
-    try{
-      const data = await window.getTopScores();
-      // remove any previous global header/items first
-      // keep only local LB then append global header+entries
-      renderLocalLeaderboard();
-      const header = document.createElement('li');
-      header.className='leader-item';
-      header.innerHTML = `<div style="opacity:.7">--- Global Top ---</div><div></div>`;
-      localLeaderboard.appendChild(header);
-      data.forEach((it, idx) => {
-        const li = document.createElement('li');
-        li.className = 'leader-item';
-        li.innerHTML = `<div>#${idx+1} ${escapeHtml(it.name || 'Anon')}</div><div>${formatNum(it.score || 0)}</div>`;
-        localLeaderboard.appendChild(li);
-      });
-    }catch(e){
-      console.warn('global fetch failed', e);
-    }
-  }
-}
-
-/* simple escape for name */
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
-
-/* bursts */
-function burstParticles(){
-  for(let i=0;i<6;i++){
-    setTimeout(()=>createParticle("+" + Math.floor( (state.multiplier + state.addPerClick) * state.earnedPrestigeMult )), i*20);
-  }
-}
-
-/* ============================================
-   INIT
-   ============================================ */
-
-loadState();
-updateUI();
-checkAchievements();
-renderLocalLeaderboard();
-// if Firebase is configured, fetch global leaderboard
-fetchAndShowGlobal();
-
-/* auto-save every 2 seconds and on unload */
-setInterval(saveState, 2000);
-window.addEventListener('beforeunload', saveState);
-
-/* keyboard support */
-window.addEventListener('keydown', e => {
-  if(e.key === ' ') { e.preventDefault(); clickAction(); }
-});
+loadState(); updateUI();
+setInterval(saveState,2000);
+window.addEventListener('beforeunload',saveState);
+window.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();clickAction();}});
 </script>
-</body>
-</html>
+
+<!-- FIREBASE SCRIPT (module) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } 
+    from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+  const firebaseConfig = { ... };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  async function submitScore(name, score){ ... }
+  async function getTopScores(){ ... }
+
+  window.submitScore = submitScore;
+  window.getTopScores = getTopScores;
+</script>
