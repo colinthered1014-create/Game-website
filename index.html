@@ -1,131 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dodge Game</title>
-  <style>
-    body {
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #222;
-      color: white;
-      font-family: Arial, sans-serif;
-      flex-direction: column;
-    }
-    canvas {
-      background-color: #333;
-      border: 3px solid #fff;
-    }
-    #score {
-      margin-top: 20px;
-      font-size: 1.5rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Game Website</title>
+<style>
+  body { font-family: Arial, sans-serif; text-align:center; margin:20px; background:#f0f0f0; }
+  h1 { color:#333; }
+  section { margin-bottom:50px; }
+  button { padding:10px 20px; font-size:16px; margin-top:10px; cursor:pointer; }
+  canvas { background:#333; border:3px solid #000; margin-top:10px; }
+  ol { padding-left:20px; text-align:left; display:inline-block; }
+</style>
 </head>
 <body>
-  <h1>Dodge the Blocks!</h1>
-  <canvas id="gameCanvas" width="400" height="600"></canvas>
-  <div id="score">Score: 0</div>
 
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreDisplay = document.getElementById('score');
+<h1>My Game Website</h1>
 
-    // Player properties
-    const player = {
-      x: canvas.width / 2 - 20,
-      y: canvas.height - 40,
-      width: 40,
-      height: 40,
-      speed: 7
-    };
+<!-- Clicker Game Section -->
+<section id="clicker-game">
+  <h2>Clicker Game</h2>
+  <div id="clicker-score">Score: 0</div>
+  <button id="clickButton">Click me!</button>
+  <div id="clicker-leaderboard">
+    <h3>Clicker Leaderboard</h3>
+    <ol id="clickerLeaderboardList"></ol>
+  </div>
+</section>
 
-    // Obstacles
-    const obstacles = [];
-    let spawnTimer = 0;
-    let score = 0;
-    let gameOver = false;
+<!-- Dodge Game Section -->
+<section id="dodge-game">
+  <h2>Dodge Game</h2>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <div id="dodge-score">Score: 0</div>
+  <div id="dodge-leaderboard">
+    <h3>Dodge Leaderboard</h3>
+    <ol id="dodgeLeaderboardList"></ol>
+  </div>
+</section>
 
-    // Input handling
-    const keys = {};
-    window.addEventListener('keydown', e => keys[e.key] = true);
-    window.addEventListener('keyup', e => keys[e.key] = false);
+<script>
+// ---------- Clicker Game ----------
+let clickerScore = 0;
+const clickerScoreDisplay = document.getElementById('clicker-score');
+const clickButton = document.getElementById('clickButton');
+const clickerLeaderboardList = document.getElementById('clickerLeaderboardList');
 
-    function spawnObstacle() {
-      const width = Math.random() * 50 + 20;
-      const x = Math.random() * (canvas.width - width);
-      obstacles.push({ x: x, y: 0, width: width, height: 20, speed: Math.random() * 3 + 2 });
+clickButton.addEventListener('click', () => {
+  clickerScore++;
+  clickerScoreDisplay.textContent = "Score: " + clickerScore;
+  saveClickerScore(clickerScore);
+});
+
+// Leaderboard functions for Clicker
+function saveClickerScore(score){
+  let scores = JSON.parse(localStorage.getItem('clickerLeaderboard')||'[]');
+  scores.push(score);
+  scores.sort((a,b)=>b-a);
+  scores = scores.slice(0,5);
+  localStorage.setItem('clickerLeaderboard', JSON.stringify(scores));
+  displayClickerLeaderboard();
+}
+
+function displayClickerLeaderboard(){
+  const scores = JSON.parse(localStorage.getItem('clickerLeaderboard')||'[]');
+  clickerLeaderboardList.innerHTML = '';
+  scores.forEach(s=>{
+    const li = document.createElement('li');
+    li.textContent = s;
+    clickerLeaderboardList.appendChild(li);
+  });
+}
+displayClickerLeaderboard();
+
+// ---------- Dodge Game ----------
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const dodgeScoreDisplay = document.getElementById('dodge-score');
+const dodgeLeaderboardList = document.getElementById('dodgeLeaderboardList');
+
+const player = { x: 180, y: 360, width: 40, height: 40, speed: 5 };
+const obstacles = [];
+let spawnTimer = 0;
+let dodgeScore = 0;
+let gameOver = false;
+
+const keys = {};
+window.addEventListener('keydown', e => keys[e.key] = true);
+window.addEventListener('keyup', e => keys[e.key] = false);
+
+function spawnObstacle() {
+  const width = Math.random()*50+20;
+  const x = Math.random()*(canvas.width-width);
+  obstacles.push({ x:x, y:0, width:width, height:20, speed: Math.random()*2+2 });
+}
+
+function update() {
+  if(gameOver) return;
+  if(keys['ArrowLeft'] && player.x>0) player.x -= player.speed;
+  if(keys['ArrowRight'] && player.x+player.width<canvas.width) player.x += player.speed;
+
+  spawnTimer++;
+  if(spawnTimer>50){ spawnObstacle(); spawnTimer=0; }
+
+  for(let i=obstacles.length-1;i>=0;i--){
+    const obs = obstacles[i];
+    obs.y += obs.speed;
+    if(player.x<obs.x+obs.width && player.x+player.width>obs.x &&
+       player.y<obs.y+obs.height && player.y+player.height>obs.y){
+      gameOver=true;
+      saveDodgeScore(dodgeScore);
     }
+    if(obs.y>canvas.height){ obstacles.splice(i,1); dodgeScore++; }
+  }
 
-    function update() {
-      if (gameOver) return;
+  dodgeScoreDisplay.textContent = "Score: "+dodgeScore;
+}
 
-      // Move player
-      if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
-      if (keys['ArrowRight'] && player.x + player.width < canvas.width) player.x += player.speed;
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='cyan';
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+  ctx.fillStyle='red';
+  obstacles.forEach(obs=>ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
 
-      // Spawn obstacles
-      spawnTimer++;
-      if (spawnTimer > 50) {
-        spawnObstacle();
-        spawnTimer = 0;
-      }
+  if(gameOver){
+    ctx.fillStyle='white';
+    ctx.font='30px Arial';
+    ctx.fillText('GAME OVER', 100, 200);
+  }
+}
 
-      // Move obstacles and check collision
-      for (let i = obstacles.length - 1; i >= 0; i--) {
-        const obs = obstacles[i];
-        obs.y += obs.speed;
+function gameLoop(){
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+gameLoop();
 
-        // Collision
-        if (player.x < obs.x + obs.width &&
-            player.x + player.width > obs.x &&
-            player.y < obs.y + obs.height &&
-            player.y + player.height > obs.y) {
-          gameOver = true;
-        }
+// Leaderboard functions for Dodge
+function saveDodgeScore(score){
+  let scores = JSON.parse(localStorage.getItem('dodgeLeaderboard')||'[]');
+  scores.push(score);
+  scores.sort((a,b)=>b-a);
+  scores = scores.slice(0,5);
+  localStorage.setItem('dodgeLeaderboard', JSON.stringify(scores));
+  displayDodgeLeaderboard();
+}
 
-        // Remove off-screen obstacles
-        if (obs.y > canvas.height) {
-          obstacles.splice(i, 1);
-          score++;
-        }
-      }
+function displayDodgeLeaderboard(){
+  const scores = JSON.parse(localStorage.getItem('dodgeLeaderboard')||'[]');
+  dodgeLeaderboardList.innerHTML = '';
+  scores.forEach(s=>{
+    const li = document.createElement('li');
+    li.textContent = s;
+    dodgeLeaderboardList.appendChild(li);
+  });
+}
+displayDodgeLeaderboard();
+</script>
 
-      scoreDisplay.textContent = "Score: " + score;
-    }
-
-    function draw() {
-      // Clear canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Draw player
-      ctx.fillStyle = 'cyan';
-      ctx.fillRect(player.x, player.y, player.width, player.height);
-
-      // Draw obstacles
-      ctx.fillStyle = 'red';
-      obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
-
-      // Game over text
-      if (gameOver) {
-        ctx.fillStyle = 'white';
-        ctx.font = '40px Arial';
-        ctx.fillText('GAME OVER', 50, canvas.height / 2);
-      }
-    }
-
-    function gameLoop() {
-      update();
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
-
-    gameLoop();
-  </script>
 </body>
 </html>
