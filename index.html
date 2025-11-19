@@ -1,12 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Game Website</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dodge Game</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #222;
+      color: white;
+      font-family: Arial, sans-serif;
+      flex-direction: column;
+    }
+    canvas {
+      background-color: #333;
+      border: 3px solid #fff;
+    }
+    #score {
+      margin-top: 20px;
+      font-size: 1.5rem;
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to My Game Website!</h1>
-    <p>This is your site. Start coding your game here!</p>
+  <h1>Dodge the Blocks!</h1>
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <div id="score">Score: 0</div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreDisplay = document.getElementById('score');
+
+    // Player properties
+    const player = {
+      x: canvas.width / 2 - 20,
+      y: canvas.height - 40,
+      width: 40,
+      height: 40,
+      speed: 7
+    };
+
+    // Obstacles
+    const obstacles = [];
+    let spawnTimer = 0;
+    let score = 0;
+    let gameOver = false;
+
+    // Input handling
+    const keys = {};
+    window.addEventListener('keydown', e => keys[e.key] = true);
+    window.addEventListener('keyup', e => keys[e.key] = false);
+
+    function spawnObstacle() {
+      const width = Math.random() * 50 + 20;
+      const x = Math.random() * (canvas.width - width);
+      obstacles.push({ x: x, y: 0, width: width, height: 20, speed: Math.random() * 3 + 2 });
+    }
+
+    function update() {
+      if (gameOver) return;
+
+      // Move player
+      if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+      if (keys['ArrowRight'] && player.x + player.width < canvas.width) player.x += player.speed;
+
+      // Spawn obstacles
+      spawnTimer++;
+      if (spawnTimer > 50) {
+        spawnObstacle();
+        spawnTimer = 0;
+      }
+
+      // Move obstacles and check collision
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        const obs = obstacles[i];
+        obs.y += obs.speed;
+
+        // Collision
+        if (player.x < obs.x + obs.width &&
+            player.x + player.width > obs.x &&
+            player.y < obs.y + obs.height &&
+            player.y + player.height > obs.y) {
+          gameOver = true;
+        }
+
+        // Remove off-screen obstacles
+        if (obs.y > canvas.height) {
+          obstacles.splice(i, 1);
+          score++;
+        }
+      }
+
+      scoreDisplay.textContent = "Score: " + score;
+    }
+
+    function draw() {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw player
+      ctx.fillStyle = 'cyan';
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+      // Draw obstacles
+      ctx.fillStyle = 'red';
+      obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.width, obs.height));
+
+      // Game over text
+      if (gameOver) {
+        ctx.fillStyle = 'white';
+        ctx.font = '40px Arial';
+        ctx.fillText('GAME OVER', 50, canvas.height / 2);
+      }
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
 </body>
 </html>
