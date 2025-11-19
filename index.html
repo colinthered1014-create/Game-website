@@ -227,7 +227,7 @@
       <button id="syncBtn" class="btn">Sync to Global Leaderboard</button>
     </div>
 
-    <footer class="mini">Saved locally. For global leaderboard, deploy backend and set API URL.</footer>
+    <footer class="mini">Saved locally. For global leaderboard, set Firebase config below.</footer>
   </div>
 
   <div class="card side">
@@ -254,12 +254,74 @@
   </div>
 </div>
 
+<!-- ===== Firebase module (put your config values below) ===== -->
+<script type="module">
+  // Firebase CDN imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit }
+    from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+  // --- REPLACE the following with your Firebase project's config ---
+  const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "NUMBER",
+    appId: "APP_ID"
+  };
+  // ---------------------------------------------------------------
+
+  // If the user hasn't set config, don't initialize (keeps local-only functionality)
+  const isConfigSet = firebaseConfig && firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.appId;
+  if(isConfigSet){
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Save score to Firestore collection 'leaderboard'
+    async function submitScore(name, score){
+      try{
+        await addDoc(collection(db, "leaderboard"), {
+          name: String(name).slice(0,32),
+          score: Number(score),
+          ts: Date.now()
+        });
+        return { ok:true };
+      }catch(e){
+        return { ok:false, error: e.message };
+      }
+    }
+
+    // Load top scoreboard
+    async function getTopScores(limitN = 20){
+      const q = query(
+        collection(db, "leaderboard"),
+        orderBy("score", "desc"),
+        limit(limitN)
+      );
+      const snapshot = await getDocs(q);
+      const data = [];
+      snapshot.forEach(doc => data.push(doc.data()));
+      return data;
+    }
+
+    // expose to window for main script to use
+    window.submitScore = submitScore;
+    window.getTopScores = getTopScores;
+  } else {
+    // not configured: expose dummy functions that throw helpful message
+    window.submitScore = async () => ({ ok:false, error: 'Firebase config not set' });
+    window.getTopScores = async () => [];
+  }
+</script>
+
+<!-- ===== Main game script (uses window.submitScore / getTopScores if available) ===== -->
 <script>
 /* ============================================
    GAME STATE & CONFIG
    ============================================ */
 
-const API_URL = ""; // <--- set to your backend like "https://your-backend.onrender.com" to enable global leaderboards
+const API_URL = ""; // unused when Firebase is set
 const GAME_KEY = "ultimate-clicker";
 const LOCAL_LB_KEY = "clicker_local_lb_v1";
 
@@ -556,25 +618,39 @@ resetBtn.addEventListener('click', () => {
   updateUI();
 });
 
-/* sync / submit to global leaderboard (if API available) */
+/* sync / submit to global leaderboard (uses Firebase if configured) */
 syncBtn.addEventListener('click', async () => {
-  if(!API_URL){
-    alert("Global leaderboard not configured. Set API_URL in the script to your backend URL.");
+  const name = nameInput.value.trim() || ("Player" + Math.floor(Math.random()*999));
+  // if firebase functions are present (set if you filled config), use them
+  if(window.submitScore && typeof window.submitScore === 'function'){
+    const res = await window.submitScore(name, Math.floor(state.clicks));
+    if(res && res.ok){
+      alert("Submitted to global leaderboard!");
+      await fetchAndShowGlobal();
+    } else {
+      alert("Failed to submit global: " + (res && res.error ? res.error : "unknown"));
+    }
     return;
   }
+
+  // fallback: no Firebase configured
+  alert("Global leaderboard not configured. Fill Firebase config at top of file.");
+});
+
+/* also bind Submit button next to name input */
+submitGlobal.addEventListener('click', async () => {
   const name = nameInput.value.trim() || ("Player" + Math.floor(Math.random()*999));
-  try{
-    const res = await fetch(API_URL + '/leaderboard/clicker', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ name, score: Math.floor(state.clicks) })
-    });
-    const ret = await res.json();
-    if(ret.ok) alert("Submitted! Check global leaderboard.");
-    fetchGlobalLeaderboard();
-  }catch(e){
-    alert("Failed to submit: "+e.message);
+  if(window.submitScore && typeof window.submitScore === 'function'){
+    const res = await window.submitScore(name, Math.floor(state.clicks));
+    if(res && res.ok){
+      alert("Submitted to global leaderboard!");
+      await fetchAndShowGlobal();
+    } else {
+      alert("Failed to submit global: " + (res && res.error ? res.error : "unknown"));
+    }
+    return;
   }
+  alert("Global leaderboard not configured. Fill Firebase config at top of file.");
 });
 
 /* ACHIEVEMENTS */
@@ -643,27 +719,28 @@ function renderLocalLeaderboard(){
   });
 }
 
-/* GLOBAL LEADERBOARD fetch */
-async function fetchGlobalLeaderboard(){
-  if(!API_URL) return;
-  try{
-    const r = await fetch(API_URL + '/leaderboard/clicker');
-    if(!r.ok) return;
-    const data = await r.json();
-    // data: array of {name,score}
-    // append below local lb
-    const header = document.createElement('li');
-    header.className='leader-item';
-    header.innerHTML = `<div style="opacity:.7">--- Global Top ---</div><div></div>`;
-    localLeaderboard.appendChild(header);
-
-    data.forEach((it,idx)=>{
-      const li = document.createElement('li');
-      li.className='leader-item';
-      li.innerHTML = `<div>#${idx+1} ${escapeHtml(it.name)}</div><div>${formatNum(it.score)}</div>`;
-      localLeaderboard.appendChild(li);
-    });
-  }catch(e){}
+/* GLOBAL LEADERBOARD fetch (uses getTopScores() from Firebase if available) */
+async function fetchAndShowGlobal(){
+  if(window.getTopScores && typeof window.getTopScores === 'function'){
+    try{
+      const data = await window.getTopScores();
+      // remove any previous global header/items first
+      // keep only local LB then append global header+entries
+      renderLocalLeaderboard();
+      const header = document.createElement('li');
+      header.className='leader-item';
+      header.innerHTML = `<div style="opacity:.7">--- Global Top ---</div><div></div>`;
+      localLeaderboard.appendChild(header);
+      data.forEach((it, idx) => {
+        const li = document.createElement('li');
+        li.className = 'leader-item';
+        li.innerHTML = `<div>#${idx+1} ${escapeHtml(it.name || 'Anon')}</div><div>${formatNum(it.score || 0)}</div>`;
+        localLeaderboard.appendChild(li);
+      });
+    }catch(e){
+      console.warn('global fetch failed', e);
+    }
+  }
 }
 
 /* simple escape for name */
@@ -684,7 +761,8 @@ loadState();
 updateUI();
 checkAchievements();
 renderLocalLeaderboard();
-if(API_URL) fetchGlobalLeaderboard();
+// if Firebase is configured, fetch global leaderboard
+fetchAndShowGlobal();
 
 /* auto-save every 2 seconds and on unload */
 setInterval(saveState, 2000);
@@ -694,53 +772,6 @@ window.addEventListener('beforeunload', saveState);
 window.addEventListener('keydown', e => {
   if(e.key === ' ') { e.preventDefault(); clickAction(); }
 });
-<script type="module">
-  // Firebase CDN imports
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } 
-    from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "YOUR_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "NUMBER",
-    appId: "APP_ID"
-  };
-
-  // Init firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Save score
-  async function submitScore(name, score){
-    await addDoc(collection(db, "leaderboard"), {
-      name,
-      score,
-      ts: Date.now()
-    });
-  }
-
-  // Load top scoreboard
-  async function getTopScores(){
-    const q = query(
-      collection(db, "leaderboard"),
-      orderBy("score", "desc"),
-      limit(20)
-    );
-
-    const snapshot = await getDocs(q);
-    const data = [];
-    snapshot.forEach(doc => data.push(doc.data()));
-    return data;
-  }
-
-  window.submitScore = submitScore;
-  window.getTopScores = getTopScores;
-</script>
-
 </script>
 </body>
 </html>
-
