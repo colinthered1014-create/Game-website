@@ -264,6 +264,17 @@ window.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();clickAc
 
 <!-- FIREBASE SCRIPT (module) -->
 <script type="module">
+  
+  const firebaseConfig = {
+  apiKey: "AIzaSyCmbAlcPrjJqiceJLbCXDs0-jYKweBGDCk",
+  authDomain: "leaderboard-stats.firebaseapp.com",
+  projectId: "leaderboard-stats",
+  storageBucket: "leaderboard-stats.firebasestorage.app",
+  messagingSenderId: "1073291197884",
+  appId: "1:1073291197884:web:ebcf72d27d3e8e1a84bfb9",
+  measurementId: "G-7CJZCLT76N"
+};
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
   import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } 
     from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
@@ -279,3 +290,4 @@ window.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();clickAc
   window.submitScore = submitScore;
   window.getTopScores = getTopScores;
 </script>
+
